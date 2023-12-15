@@ -120,7 +120,7 @@ export default function AdminNavbar(props) {
 						}}>
 						{brandText}
 					</Link>
-				</Box>
+				</Box>			
 				<Box ms='auto' w={{ sm: '100%', md: 'unset' }}>
 					<AdminNavbarLinks
 						onOpen={props.onOpen}
