@@ -1,0 +1,65 @@
+[
+    {
+        "symbol": ["AAPL", true],
+        "trades": 50,
+        "meanReturn": 0.32,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["KNC", true],
+        "trades": 67,
+        "meanReturn": 0.16,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["DFE", true],
+        "trades": 34,
+        "meanReturn": 0.22,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["XRE", true],
+        "trades": 10,
+        "meanReturn": 0.78,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["PLA", true],
+        "trades": 17,
+        "meanReturn": 0.6,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["SS", true],
+        "trades": 33,
+        "meanReturn": 0.5,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["XDC", true],
+        "trades": 22,
+        "meanReturn": 0.1,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["UBUX", true],
+        "trades": 18,
+        "meanReturn": 0.4,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    },
+    {
+        "symbol": ["SDF", true],
+        "trades": 89,
+        "meanReturn": 0.1,
+        "stdReturn": 0.2,
+        "winRate": 0.5
+    }
+]

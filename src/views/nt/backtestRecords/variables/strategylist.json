@@ -1,0 +1,20 @@
+[
+    {
+        "id" : "fsssdfwewe-dfbdb-ewbcew",
+        "dateCreated" : "2019-01-01",
+        "name" : "Some Strat",
+        "description" : "Some Description",
+        "annualizedROR" : 0.3,
+        "successRate" : 0.5,
+        "trades" : 200
+    },
+    {
+        "id" : "bceuwbowi-dfbdb-ewbcew",
+        "dateCreated" : "2019-01-01",
+        "name" : "Some Other Strat",
+        "description" : "Some Description",
+        "annualizedROR" : 0.5,
+        "successRate" : 0.87,
+        "trades": 100
+    }
+]
