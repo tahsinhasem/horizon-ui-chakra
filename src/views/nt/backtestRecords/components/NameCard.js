@@ -32,7 +32,7 @@ function EditableControls() {
 export default function CardComp(props) {
   // Chakra Color Mode
 
-  const {id, setId, successRate, setSuccessRate, dateCreated, strategyName, setStrategyName} = props;
+  const {id, setId, beginDate, endDate, successRate, setSuccessRate, dateCreated, strategyName, setStrategyName} = props;
 
   /*
   const [id, setId] = React.useState(v4.call());
@@ -94,6 +94,10 @@ export default function CardComp(props) {
 
                 <Text fontSize="sm" color="gray.400">
                     Date Created: {dateCreated}
+                </Text>
+
+                <Text fontSize="sm" color="gray.400">
+                    From: {beginDate} to {endDate}
                 </Text>
                 
             </GridItem>
