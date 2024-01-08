@@ -3,13 +3,14 @@ import { Box, Stat, StatLabel, StatNumber, StatHelpText, CircularProgressLabel, 
 import Card from "components/card/Card";
 import { Link as ReachLink } from "@reach/router"
 import { MdArrowForward, MdDownload, MdContentCopy, MdDelete } from 'react-icons/md';
-
-
+import axios from 'axios';
+import Papa from 'papaparse';
 
 
 
 export default function StrategyCard(props){
     
+    const base_url = "http://localhost:8000"
     const {setStrategyID, currentStrategyId, changeTab, strategy} = props;
     
     const {id, name, date_created, description, backtest_start_date, backtest_end_date} = strategy;
@@ -25,7 +26,80 @@ export default function StrategyCard(props){
     }
     avg_cagr /= symbols_list.length
     console.log(avg_cagr)
+
+
+    function handleDelete(id){
+        axios
+        .delete(base_url + "/api/records/backtests/" + id)
+        .then(res=> {
+            console.log("successfully deleted")
+            window.location.reload();
+        })
+        .catch(err => console.log(err))
+    }
+
+
+    function handleDuplicate(id){
+        axios
+        .get(base_url + "/api/records/backtests/" + id)
+        .then(res=>{
+            return res.data
+        })
+        .then( res=> {
+            return axios.post(base_url + "/api/records/orders/batch",
+            {
+                backtest: {
+                  backtest_start_date: res.backtest.backtest_start_date,
+                  backtest_end_date: res.backtest.backtest_end_date,
+                  name: res.backtest.name,
+                  description: res.backtest.description,
+                  notes: res.backtest.notes,
+                  reference_id: res.backtest.reference_id
+                },
+                orders: res.orders
+              })
+        })
+        .then(res=>{
+            window.location.reload();
+        })
+        .catch(err=>console.log(err))
+    }
     
+
+    function handleDownload(id){
+        axios
+        .get(base_url + "/api/records/backtests/" + id)
+        .then(res=>{
+            console.log(res)
+            return res.data
+        })
+        .then(res=>{
+            const orders = res.orders
+            const csv = Papa.unparse(orders);
+            console.log(csv);
+
+            // Create a Blob from the CSV string
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+            // Create a URL from the Blob
+            const url = URL.createObjectURL(blob);
+
+            // Create a link element that points to the URL
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${res.backtest.name}_${res.backtest.id}_orders.csv`;
+
+            // Append the link to the body (required for Firefox)
+            document.body.appendChild(link);
+
+            // Simulate a click on the link
+            link.click();
+
+            // Remove the link from the body
+            document.body.removeChild(link);
+        })
+    }
+
 
     const stats = (
         <Grid justifyItems={"center"}  templateColumns="repeat(2,1fr)">
@@ -59,37 +133,37 @@ export default function StrategyCard(props){
             
         <ButtonGroup flexDirection={'row'} justifyContent={'left'}>
 
-            <Tooltip label="Delete (unimplemented)" aria-label="Delete strategy">
+            <Tooltip label="Delete" aria-label="Delete strategy">
                 <IconButton
                     variant='solid'
                     colorScheme='brandScheme'
                     aria-label='Delete strategy'
                     onClick={() => {
-                        console.log("Implement Delete for ", id)
+                       handleDelete(id)
                     }}
                     icon={<MdDelete/>}
                 />
             </Tooltip>
 
-            <Tooltip label="Duplicate (unimplemented)" aria-label="Delete strategy">
+            <Tooltip label="Duplicate" aria-label="Delete strategy">
                 <IconButton
                     variant='solid'
                     colorScheme='brandScheme'
                     aria-label='Duplicate strategy'
                     onClick={() => {
-                        console.log("Implement Duplicate for ", id)
+                        handleDuplicate(id)
                     }}
                     icon={<MdContentCopy/>}
                 />
             </Tooltip>
             
-            <Tooltip label="Download (unimplemented)" aria-label="Delete strategy">
+            <Tooltip label="Download" aria-label="Delete strategy">
                 <IconButton
                     variant='solid'
                     colorScheme='brandScheme'
                     aria-label='Download strategy'
                     onClick={() => {
-                        console.log("Implement Download for ", id)
+                        handleDownload(id)
                     }}
                     icon={<MdDownload/>}
                 />
@@ -115,16 +189,28 @@ export default function StrategyCard(props){
         </Flex>
     )
 
+    function getFormattedDate(dateStr){
+        let date = new Date(dateStr);
+        let year = date.getFullYear();
+        let month = ('0' + (date.getMonth() + 1)).slice(-2); // Months are 0 based. Add leading 0 and slice last 2 characters
+        let day = ('0' + date.getDate()).slice(-2); // Add leading 0 and slice last 2 characters
+
+        return `${year}-${month}-${day}`;
+    }
+
     return (
-        <Card margin={5}>
+        <Card marginY={5} boxShadow='lg'>
 
                 <Box>
 
-                    <Heading >{name}</Heading>
+                    <Heading marginY={2}>{name}</Heading>
 
                     <Flex justifyContent={'space-between'}>
-                        <Text fontSize="xs" color="gray.300">{date_created}, ID: {id}</Text>
-                        <Text fontSize="xs" color="gray.300">From {backtest_start_date} to {backtest_end_date}</Text>
+                        <div>
+                            <Text fontSize="xs" color="gray.300">ID: {id}</Text>
+                            <Text fontSize="xs" color="gray.300">Created: {date_created}</Text>
+                        </div>
+                        <Text fontSize="xs" color="gray.300">From {getFormattedDate(backtest_start_date)} to {getFormattedDate(backtest_end_date)}</Text>
                     </Flex>
 
                     <Divider/>

@@ -1,10 +1,11 @@
 // Chakra imports
-import { Box, Heading, Text, Button, GridItem, Grid} from "@chakra-ui/react";
+import { Box, SkeletonCircle, Skeleton, SkeletonText, Heading, Text, Button, GridItem, Grid, background} from "@chakra-ui/react";
 import CardComp from "./components/NameCard";
 import Description from "./components/Description";
+import Card from "components/card/Card";
 import Notes from "./components/Notes";
 import OrdersTable from "./components/OrdersTable";
-import React from "react";
+import React, { useEffect } from "react";
 import SymbolsTable from "./components/SymbolsTable";
 import { v4 } from "uuid";
 import {ordersColumnsData} from "views/nt/backtestRecords/variables/ordersColumnsData.js";
@@ -17,42 +18,115 @@ import CheckTable from "views/nt/backtestRecords/components/CheckTable";
 import StatsCard from "./components/StatsCard";
 import testing_data from "views/nt/backtestRecords/variables/testing_data.json";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import axios from "axios";
 
 export default function BackTestRecord(props) {
+
+  const {strategyID} = props;
+  const base_url = "http://127.0.0.1:8000"
 
   const [id, setId] = React.useState("ac16ef8d-4ad8-42f8-adbd-a77f06c720ce");
   const [strategyName, setStrategyName] = React.useState("Strategy Name");
   const [successRate, setSuccessRate] = React.useState(0.75);
   const [description, setDescription] = React.useState("Description");
   const [notes, setNotes] = React.useState("Notes");
-  const dateCreated = new Date().toLocaleDateString();
+  const [dateCreated, setDateCreated]  = React.useState( new Date().toLocaleDateString());
+  const [dateModified, setDateModified] = React.useState( new Date().toLocaleDateString());
+  const [backtestBeginDate, setBacktestBeginDate] = React.useState( new Date().toLocaleDateString());
+  const [backtestEndDate, setBacktestEndDate] = React.useState( new Date().toLocaleDateString());
+  
   const [avgReturns, setAvgReturns] = React.useState(0);
   const [avgAnnualizedRateofReturn, setAvgAnnualizedRateofReturn] = React.useState(0);
   const [standardDeviation, setStandardDeviation] = React.useState(0);
   const [sharpeRatio, setSharpeRatio] = React.useState(0);
   const [avgDuration, setAvgDuration] = React.useState(5);
+  const [referenceID, setReferenceID] = React.useState('');
+
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  //backtest strategy duration in days
+  const [strategyDuration, setStrategyDuration] = React.useState(150);
+
+  const [orders, setOrders] = React.useState(testing_data);
+  
 
 
   const[symbolsSummary, setSymbolsSummary] = React.useState([]);
 
 
+  function getStrategyDetails(id){
+    console.log("fetching details for id: ", id)
+    
+    axios
+    .get(base_url+"/api/records/backtests/" + id)
+    .then(res => {
+      const data = res.data;
+
+      console.log(data.backtest)
+      setId(data.backtest.id)
+      setStrategyName(data.backtest.name)
+      setNotes(data.backtest.notes)
+      setDescription(data.backtest.description)
+
+      setDateCreated(data.backtest.date_created)
+      setDateModified(data.backtest.date_modified)
+
+      setBacktestBeginDate(data.backtest.backtest_start_date)
+      setBacktestEndDate(data.backtest.backtest_end_date)
+      
+      setStrategyDuration(data.backtest.backtest_duration)
+      setReferenceID(data.backtest.reference_id)
+      
+      const newOrders = data.orders.map(x => {
+        x.active = true
+        return x
+      })
+      setOrders(newOrders)
+
+      setIsLoading(false)
+    })
+    .catch( err => {
+      console.log(err);
+    })
+  }
+
+  // Run this when a strat id is changed
+  useEffect(() => {
+
+    if (strategyID != -1 ){
+      console.log(strategyID)
+      setId(strategyID)
+      setIsLoading(true)
+      getStrategyDetails(strategyID)  
+    }
+
+  }, [strategyID])
 
 
-
-
-  //backtest strategy duration in days
-  const strategyDuration = 150;
-
-  const [orders, setOrders] = React.useState(testing_data);
-
+  // Run this when name, description or notes are changed
   React.useEffect(() => {
-    if (strategyName === undefined) {
+    if (strategyName === undefined || description === undefined || notes === undefined || strategyName === "Strategy Name") {
       //Do not change Name
       //console.log("Strategy Name is undefined")
     }else{
-      console.log("Handle Strategy name change to: ", strategyName)
+      console.log("Making Edit to startegy id: ", id);
+      
+      axios
+        .put(base_url+"/api/records/backtests/" + id, {
+          name: strategyName,
+          description: description,
+          notes: notes,
+          backtest_start_date: backtestBeginDate, //<- required
+          backtest_end_date: backtestEndDate, // <- required
+        })
+        .then(res => {
+          console.log(res);
+        })
+        .catch( err => {
+          console.log(err);
+        })
     }
-  }, [strategyName]);
+  }, [strategyName, description, notes]);
 
 
   function resetOrders(){
@@ -317,44 +391,83 @@ export default function BackTestRecord(props) {
   }, [orders]);
 
 
+  const loadingScreen = (
+  <div>
+      <Card padding='6' marginY='5'>
+        <SkeletonCircle size='10' />
+        <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+      </Card> 
+
+      <Card padding='6' marginY='5'>
+        <SkeletonText mt='4' noOfLines={10} spacing='4' skeletonHeight='2' />
+      </Card> 
+
+      <Card padding='6' marginY='5'>
+        <SkeletonText mt='4' noOfLines={2} spacing='4' skeletonHeight='2' />
+      </Card> 
+
+  </div>
+  )
 
   // Chakra Color Mode
   return (
+
     <Box pt={{ base: "40px", md: "20px", xl: "10px" }}>
 
-        
-        <Grid templateColumns="repeat(6, 1fr)" gap={6}>
+        {isLoading ? loadingScreen : 
 
-          <GridItem colSpan={6}>
-            <CardComp id={id} setId={setId} successRate={successRate} setSuccessRate={setSuccessRate} dateCreated={dateCreated} strategyName={strategyName} setStrategyName={setStrategyName}/>
-          </GridItem>
+        <div>
+          
+          <Grid templateColumns="repeat(6, 1fr)" gap={6}>
 
-          <GridItem colSpan={4}>
-            <Description description={description} setDescription={setDescription}/>
-            <Box marginTop="20px">
-              <StatsCard successRate={successRate} orders={orders} strategyDuration={strategyDuration} avgDuration={avgDuration} avgReturns={avgReturns} standardDeviation={standardDeviation} avgAnnualizedROR={avgAnnualizedRateofReturn} sharpeRatio={sharpeRatio}/>
-            </Box>
-          </GridItem>
+            <GridItem colSpan={6}>
+              <CardComp id={id} 
+                        setId={setId} 
+                        successRate={successRate} 
+                        setSuccessRate={setSuccessRate} 
+                        dateCreated={dateCreated} 
+                        dateModified={dateModified}
+                        backtestBeginDate={backtestBeginDate}
+                        backtestEndDate={backtestEndDate} 
+                        strategyName={strategyName} 
+                        setStrategyName={setStrategyName}
+                        referenceID={referenceID}/>
+            </GridItem>
 
-          <GridItem colSpan={2}>  
-            <Notes notes={notes} setNotes={setNotes}/>
-          </GridItem>
+            <GridItem colSpan={4}>
+              <Description  description={description} 
+                            setDescription={setDescription}/>
+              <Box marginTop="20px">
+                <StatsCard  successRate={successRate} 
+                            orders={orders} 
+                            strategyDuration={strategyDuration} 
+                            avgDuration={avgDuration} 
+                            avgReturns={avgReturns} 
+                            standardDeviation={standardDeviation} 
+                            avgAnnualizedROR={avgAnnualizedRateofReturn} 
+                            sharpeRatio={sharpeRatio}/>
+              </Box>
+            </GridItem>
+
+            <GridItem colSpan={2}>  
+              <Notes notes={notes} setNotes={setNotes}/>
+            </GridItem>
 
 
-          <GridItem colSpan={6}>
-            <SymbolsTable columnsData={columnsDataSymbols} tableData={symbolsSummary}/>
-          </GridItem>
+            <GridItem colSpan={6}>
+              <SymbolsTable columnsData={columnsDataSymbols} tableData={symbolsSummary}/>
+            </GridItem>
 
-          <GridItem colSpan={6}>
-            <OrdersTable resetOrders={resetOrders} uncheckAllOrders={uncheckAllOrders} columnsData={ordersColumnsData} tableData={orders} setTable={setOrders}/>
-          </GridItem>
+            <GridItem colSpan={6}>
+              <OrdersTable resetOrders={resetOrders} uncheckAllOrders={uncheckAllOrders} columnsData={ordersColumnsData} tableData={orders} setTable={setOrders}/>
+            </GridItem>
 
-        </Grid>
+          </Grid>
                 
-        <Button onClick={() => setId(v4.call())}>Change ID</Button>
-        <Button onClick={() => setSuccessRate( Math.round((Math.random() * 100 * 100)) /100) }>Change Success Rate</Button>
-    
+        </div>}
 
     </Box>
+
+
   );
 }

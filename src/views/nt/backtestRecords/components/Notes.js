@@ -25,12 +25,12 @@ function EditableControls() {
     )
 }
 
-export default function Notes(){
+export default function Notes(props){
 
-    const [notes, setNotes] = React.useState('These are some notes about the strategy. It is a long description that should be able to wrap to the next line.');
+    const {notes, setNotes} = props;
 
     const handleSubmit = (event) => {
-        console.log("Implement NOTES submit for: " + event);
+        setNotes(event); //<- submit is implemented by a useEffect for notes
     };
 
     const handleEdit = (event) => {
@@ -44,7 +44,7 @@ export default function Notes(){
             <Divider mb={2} />
 
             <Editable
-            defaultValue='Strategy Notes'
+            defaultValue=''
             size='sm'
             isPreviewFocusable={false}
             onChange={handleEdit}

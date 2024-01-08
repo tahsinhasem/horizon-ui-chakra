@@ -30,9 +30,12 @@ function EditableControls() {
 
 
 export default function CardComp(props) {
-  // Chakra Color Mode
+    // Chakra Color Mode
 
-  const {id, setId, beginDate, endDate, successRate, setSuccessRate, dateCreated, strategyName, setStrategyName} = props;
+    const {id, setId, successRate, setSuccessRate, dateCreated, dateModified, strategyName, referenceID, setStrategyName} = props;
+
+    const beginDate = props.backtestBeginDate;
+    const endDate = props.backtestEndDate;
 
   /*
   const [id, setId] = React.useState(v4.call());
@@ -71,7 +74,7 @@ export default function CardComp(props) {
                 onChange={handleEdit}
                 onSubmit={handleSubmit}
                 value={strategyName}
-                marginY={2}
+                marginY={3}
                 >
                     <Grid templateColumns="repeat(3, 1fr)" gap={6}>
 
@@ -88,16 +91,25 @@ export default function CardComp(props) {
                 </Editable>
 
 
-                <Text fontSize="sm" color="gray.400">
+                <Text fontSize="xs" color="gray.400">
                     ID: {id.toString()}
                 </Text>
 
-                <Text fontSize="sm" color="gray.400">
+                <Text fontSize="xs" color="gray.400">
                     Date Created: {dateCreated}
                 </Text>
+                
+                <Text fontSize="xs" color="gray.400">
+                    Date Modified: {dateModified}
+                </Text>
 
-                <Text fontSize="sm" color="gray.400">
+                <Text fontSize="xs" color="gray.400">
                     From: {beginDate} to {endDate}
+                </Text>
+
+                
+                <Text fontSize="xs" color="gray.400">
+                    Reference: {referenceID}
                 </Text>
                 
             </GridItem>

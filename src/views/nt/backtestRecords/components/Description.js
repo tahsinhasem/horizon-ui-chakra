@@ -27,12 +27,12 @@ function EditableControls() {
 
 
 
-export default function Description(){
+export default function Description(props){
 
-    const [description, setDescription] = React.useState('This is the description about the strategy. It is a long description that should be able to wrap to the next line.');
+    const {description, setDescription} = props;
 
     const handleSubmit = (event) => {
-        console.log("Implement DESCRIPTION submit for: " + event);
+        setDescription(event); //<- submit is implemented by a useEffect for description
     };
 
     const handleEdit = (event) => {
@@ -47,7 +47,7 @@ export default function Description(){
 
 
             <Editable
-            defaultValue='Description'
+            defaultValue=''
             size='sm'
             isPreviewFocusable={false}
             onChange={handleEdit}

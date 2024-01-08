@@ -15,24 +15,40 @@ export default function BacktestRecords(){
     
     const [tabIndex, setTabIndex] = useState(0)
     const [strategyID, setStrategyID] = useState(-1)
-    const [strategiesData, setStrategiesData] = useState(data)
+    const [strategiesData, setStrategiesData] = useState([])
 
     const base_url = "http://127.0.0.1:8000"
 
+
     // utilites
+    let stratsIntervalID = null;
     function getStrategiesData(){
         //fetch 
         axios
         .get(base_url + "/api/records/backtests")
         .then((response) => {
-            console.log(response.data)
             setStrategiesData(response.data)
+            if (stratsIntervalID){
+                clearInterval(stratsIntervalID)
+                stratsIntervalID = null;
+            }
         })
         .catch((error) => {
             console.log(error)
+            if (!stratsIntervalID) {
+                console.log("retrying")
+                stratsIntervalID = setInterval(getStrategiesData, 5000);
+            }
         })
 
     }
+
+
+    useEffect(() => {
+        if (tabIndex === 0){
+            getStrategiesData()
+        }
+    }, [tabIndex])
 
 
     //Run on first run

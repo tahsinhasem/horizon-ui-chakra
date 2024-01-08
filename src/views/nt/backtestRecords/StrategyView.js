@@ -2,6 +2,7 @@
 import React, { Component } from 'react';   //import React Component
 import { Box, Heading, Text} from "@chakra-ui/react";
 import StrategyCard from 'views/nt/backtestRecords/components/StrategyCard';
+import Skel from "views/nt/backtestRecords/components/Skel";
 
 
 export default function BacktestRecords(props){
@@ -10,9 +11,23 @@ export default function BacktestRecords(props){
     return (
         <Box >
 
-            {strategiesData.map((strategy) => (
-                <StrategyCard changeTab={changeTab} setStrategyID={setStrategyID} strategy={strategy}/>
-            ))}
+
+            {strategiesData.length == 0 ?
+                (
+                    <div>
+                        <Skel/>
+                        <Skel/>
+                        <Skel/>
+                    </div>
+                )
+                :
+                (
+                    strategiesData.map((strategy) => (
+                        <StrategyCard changeTab={changeTab} setStrategyID={setStrategyID} strategy={strategy}/>
+                    ))                       
+                )
+            
+            }
 
         </Box>
     );

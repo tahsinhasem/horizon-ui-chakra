@@ -19,6 +19,7 @@ ReactDOM.render(
 						<Route path={`/admin`} component={AdminLayout} />
 						<Route path={`/rtl`} component={RtlLayout} />
 						<Redirect from='/' to='/admin' />
+						
 					</Switch>
 				</HashRouter>
 			</ThemeEditorProvider>

@@ -14,11 +14,11 @@ export const ordersColumnsData = [
     },
     {
       Header: "BEGIN DATE",
-      accessor: "beginDate",
+      accessor: "begin_date",
     },
     {
       Header: "END DATE",
-      accessor: "endDate",
+      accessor: "end_date",
     },
     {
       Header: "DURATION",
@@ -26,11 +26,11 @@ export const ordersColumnsData = [
     },
     {
       Header: "BUY PRICE",
-      accessor: "buyPrice",
+      accessor: "buy_price",
     },
     {
       Header: "SELL PRICE",
-      accessor: "sellPrice",
+      accessor: "sell_price",
     },
     {
       Header: "RETURNS",
