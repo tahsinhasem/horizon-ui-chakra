@@ -1,0 +1,88 @@
+[
+    {
+        "id" : "fsssdfwewe-dfbdb-ewbcew",
+        "date_created" : "YYYY-MM-DD HH:MM:SS",
+        "name" : "Some Strat",
+        "description" : "The quick brown fox jumps over the lazy dog is an English-language pangram—a sentence that contains all of the letters of the English alphabet. Owing to its existence, Chakra was created.",
+        "backtest_start_date" : "DD/MM/YYYY",
+        "backtest_end_date" : "DD/MM/YYYY",
+        "stats": {
+            "trades": 24,
+            "success_rate": 0.72,
+            "std": 0.14907119849998596
+        },
+        "symbols": {
+            "AAPL": {
+                "trades": 4,
+                "cagr": 1.218817663091615,
+                "success_rate": 1.0,
+                "std": 0.0,
+                "mean": 0.2,
+                "sharpe_ratio": null
+            },
+            "TSLA": {
+                "trades": 12,
+                "cagr": 0.856199319773757,
+                "success_rate": 0.6666666666666666,
+                "std": 0.1885618083164127,
+                "mean": 0.06666666666666667,
+                "sharpe_ratio": 0.35355339059327373
+            },
+            "XSD": {
+                "trades": 4,
+                "cagr": 1.218817663091615,
+                "success_rate": 1.0,
+                "std": 0.0,
+                "mean": 0.2,
+                "sharpe_ratio": null
+            }
+        }
+    },
+    {
+        "id" : "bceuwbowi-dfbdb-ewbcew",
+        "date_created" : "YYYY-MM-DD HH:MM:SS",
+        "name" : "Some Other Strat",
+        "description" : "Some Description",
+        "backtest_start_date" : "DD/MM/YYYY",
+        "backtest_end_date" : "DD/MM/YYYY",
+        "stats": {
+            "trades": 24,
+            "success_rate": 0.8333333333333334,
+            "std": 0.14907119849998596
+        },
+        "symbols": {
+            "AAPL": {
+                "trades": 4,
+                "cagr": 1.218817663091615,
+                "success_rate": 1.0,
+                "std": 0.0,
+                "mean": 0.2,
+                "sharpe_ratio": null
+            },
+            "TSLA": {
+                "trades": 12,
+                "cagr": 0.856199319773757,
+                "success_rate": 0.6666666666666666,
+                "std": 0.1885618083164127,
+                "mean": 0.06666666666666667,
+                "sharpe_ratio": 0.35355339059327373
+            },
+            "XSD": {
+                "trades": 4,
+                "cagr": 1.218817663091615,
+                "success_rate": 1.0,
+                "std": 0.0,
+                "mean": 0.2,
+                "sharpe_ratio": null
+            },
+            "NFLX": {
+                "trades": 4,
+                "cagr": 1.218817663091615,
+                "success_rate": 1.0,
+                "std": 0.0,
+                "mean": 0.2,
+                "sharpe_ratio": null
+            }
+        }
+    }
+]

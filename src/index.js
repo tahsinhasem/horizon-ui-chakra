@@ -8,18 +8,25 @@ import RtlLayout from 'layouts/rtl';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'theme/theme';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
+import  PrivateRoute from 'utils/PrivateRoute';
+import { AuthProvider } from 'contexts/AuthContext';
 
 ReactDOM.render(
 	<ChakraProvider theme={theme}>
 		<React.StrictMode>
 			<ThemeEditorProvider>
 				<HashRouter>
-					<Switch>
-						<Route path={`/auth`} component={AuthLayout} />
-						<Route path={`/admin`} component={AdminLayout} />
-						<Route path={`/rtl`} component={RtlLayout} />
-						<Redirect from='/' to='/admin' />
-					</Switch>
+					<AuthProvider>
+						<Switch>
+							<Route path={`/auth`} component={AuthLayout} />
+
+							<PrivateRoute path={`/admin`} component={AdminLayout} />
+							
+							<Route path={`/rtl`} component={RtlLayout} />
+							<Redirect from='/' to='/admin' /> 
+							
+						</Switch>
+					</AuthProvider>
 				</HashRouter>
 			</ThemeEditorProvider>
 		</React.StrictMode>

@@ -25,6 +25,9 @@ import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes.js';
 import { ThemeEditor } from './ThemeEditor';
+import { useContext } from 'react';
+import AuthContext from 'contexts/AuthContext';
+
 export default function HeaderLinks(props) {
 	const { secondary } = props;
 	// Chakra Color Mode
@@ -41,6 +44,9 @@ export default function HeaderLinks(props) {
 		'14px 17px 40px 4px rgba(112, 144, 176, 0.06)'
 	);
 	const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
+	
+	const {logoutUser, username} = useContext(AuthContext);
+	
 	return (
 		<Flex
 			w={{ sm: '100%', md: 'auto' }}
@@ -52,6 +58,7 @@ export default function HeaderLinks(props) {
 			borderRadius="30px"
 			boxShadow={shadow}>
 			<SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" />
+			
 			<Flex
 				bg={ethBg}
 				display={secondary ? 'flex' : 'none'}
@@ -71,7 +78,10 @@ export default function HeaderLinks(props) {
 					</Text>
 				</Text>
 			</Flex>
+
+
 			<SidebarResponsive routes={routes} />
+
 			<Menu>
 				<MenuButton p="0px">
 					<Icon mt="6px" as={MdNotificationsNone} color={navbarIcon} w="18px" h="18px" me="10px" />
@@ -95,16 +105,17 @@ export default function HeaderLinks(props) {
 						</Text>
 					</Flex>
 					<Flex flexDirection="column">
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px="0" borderRadius="8px" mb="10px">
+						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px="0" borderRadius="8px" mb="10px">
 							<ItemContent info="Horizon UI Dashboard PRO" aName="Alicia" />
-						</MenuItem>
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px="0" borderRadius="8px" mb="10px">
+						</MenuItem> */}
+						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px="0" borderRadius="8px" mb="10px">
 							<ItemContent info="Horizon Design System Free" aName="Josh Henry" />
-						</MenuItem>
+						</MenuItem> */}
 					</Flex>
 				</MenuList>
 			</Menu>
 
+{/* 
       <Menu>
         <MenuButton p='0px'>
           <Icon
@@ -162,7 +173,7 @@ export default function HeaderLinks(props) {
             </Link>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
 
 			<ThemeEditor navbarIcon={navbarIcon} />
 
@@ -171,7 +182,7 @@ export default function HeaderLinks(props) {
 					<Avatar
 						_hover={{ cursor: 'pointer' }}
 						color="white"
-						name="Adela Parkson"
+						name={username ? username: ''}
 						bg="#11047A"
 						size="sm"
 						w="40px"
@@ -190,7 +201,7 @@ export default function HeaderLinks(props) {
 							fontSize="sm"
 							fontWeight="700"
 							color={textColor}>
-							👋&nbsp; Hey, Adela
+							👋&nbsp; Hey, {username ? username: ''}
 						</Text>
 					</Flex>
 					<Flex flexDirection="column" p="10px">
@@ -200,7 +211,7 @@ export default function HeaderLinks(props) {
 						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
 							<Text fontSize="sm">Newsletter Settings</Text>
 						</MenuItem>
-						<MenuItem
+						<MenuItem onClick={logoutUser}
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}
 							color="red.400"
