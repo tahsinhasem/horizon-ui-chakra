@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
 
 
-const baseUrl = "http://127.0.0.1:8000"
+const baseUrl = "http://3.85.4.6:8000"
 
 // TODO: Handle refresh token expiry
 const useAxios = () => {
