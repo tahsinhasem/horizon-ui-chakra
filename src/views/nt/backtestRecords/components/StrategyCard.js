@@ -3,18 +3,18 @@ import { Box, Stat, StatLabel, StatNumber, StatHelpText, CircularProgressLabel, 
 import Card from "components/card/Card";
 import { Link as ReachLink } from "@reach/router"
 import { MdArrowForward, MdDownload, MdContentCopy, MdDelete } from 'react-icons/md';
-import axios from 'axios';
 import Papa from 'papaparse';
+import useAxios from 'utils/useAxios';
 
 
 
 export default function StrategyCard(props){
     
-    const base_url = "http://localhost:8000"
+    const api = useAxios();
+
     const {setStrategyID, currentStrategyId, changeTab, strategy} = props;
     
     const {id, name, date_created, description, backtest_start_date, backtest_end_date} = strategy;
-
 
     const successRate = strategy.stats.success_rate
     const trades = strategy.stats.trades
@@ -29,8 +29,8 @@ export default function StrategyCard(props){
 
 
     function handleDelete(id){
-        axios
-        .delete(base_url + "/api/records/backtests/" + id)
+        api
+        .delete("/api/records/backtests/" + id)
         .then(res=> {
             console.log("successfully deleted")
             window.location.reload();
@@ -40,13 +40,13 @@ export default function StrategyCard(props){
 
 
     function handleDuplicate(id){
-        axios
-        .get(base_url + "/api/records/backtests/" + id)
+        api
+        .get("/api/records/backtests/" + id)
         .then(res=>{
             return res.data
         })
         .then( res=> {
-            return axios.post(base_url + "/api/records/orders/batch",
+            return api.post("/api/records/orders/batch",
             {
                 backtest: {
                   backtest_start_date: res.backtest.backtest_start_date,
@@ -67,8 +67,8 @@ export default function StrategyCard(props){
     
 
     function handleDownload(id){
-        axios
-        .get(base_url + "/api/records/backtests/" + id)
+        api
+        .get("/api/records/backtests/" + id)
         .then(res=>{
             console.log(res)
             return res.data

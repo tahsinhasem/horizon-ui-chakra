@@ -9,7 +9,7 @@ import StrategyView from 'views/nt/backtestRecords/StrategyView';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import {useState, useEffect} from 'react';
 import data from "views/nt/backtestRecords/variables/strategylist.json"
-import axios from 'axios';
+import useAxios from 'utils/useAxios';
 
 export default function BacktestRecords(){
     
@@ -17,30 +17,30 @@ export default function BacktestRecords(){
     const [strategyID, setStrategyID] = useState(-1)
     const [strategiesData, setStrategiesData] = useState([])
 
-    const base_url = "http://127.0.0.1:8000"
+
+    const api = useAxios();
 
 
     // utilites
     let stratsIntervalID = null;
     function getStrategiesData(){
         //fetch 
-        axios
-        .get(base_url + "/api/records/backtests")
+        api
+        .get("/api/records/backtests")
         .then((response) => {
-            setStrategiesData(response.data)
-            if (stratsIntervalID){
-                clearInterval(stratsIntervalID)
-                stratsIntervalID = null;
-            }
+            setStrategiesData(response.data);
         })
         .catch((error) => {
-            console.log(error)
-            if (!stratsIntervalID) {
-                console.log("retrying")
-                stratsIntervalID = setInterval(getStrategiesData, 5000);
+            if (error.response.status === 401) {
+                //this is habdled by the interceptor
+                //alert('Unauthorized. Please log in again.');
+                console.log(error);
+            } else {
+                alert(`Error Fetching Data. ${error.message}`);
+                console.log(error);
             }
+            
         })
-
     }
 
 
@@ -54,7 +54,6 @@ export default function BacktestRecords(){
     //Run on first run
     useEffect(() => {
         getStrategiesData()
-        console.log("updates strategies")
     }, [])
 
 

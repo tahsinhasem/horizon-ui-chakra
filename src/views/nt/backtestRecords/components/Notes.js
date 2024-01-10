@@ -1,4 +1,4 @@
-import { Box, Editable, Text, Grid, Input, Flex, ButtonGroup, IconButton, EditablePreview, EditableTextarea, EditableInput, GridItem,  Heading, Divider } from "@chakra-ui/react";
+import { Box, Editable, Textarea, Text, Grid, Input, Flex, ButtonGroup, IconButton, EditablePreview, EditableTextarea, EditableInput, GridItem,  Heading, Divider } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import React from "react";
 import { useEditableControls } from "@chakra-ui/react";
@@ -54,7 +54,7 @@ export default function Notes(props){
                 <Grid templateColumns="repeat(10, 1fr)" gap={6}>
 
                     <GridItem colSpan={9}>
-                        <EditablePreview />
+                        <EditablePreview as={Text}/>
                         <Input as={EditableTextarea}/>
                     </GridItem>
                     <GridItem colSpan={1}>

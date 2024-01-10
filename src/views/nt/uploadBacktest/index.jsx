@@ -25,9 +25,9 @@ import Card from "components/card/Card";
 import { useState, useEffect } from 'react';
 import { useDisclosure } from "@chakra-ui/react"
 import Papa from 'papaparse';
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import _ from 'lodash';
+import useAxios from "utils/useAxios";
 
 export default function Settings() {
 
@@ -48,7 +48,7 @@ export default function Settings() {
   const [orders, setOrders] = useState([])
   const [isUploading, setIsUploading] = useState(false)
 
-  const base_url = "http://localhost:8000";
+  const api = useAxios();
 
 
   function makeAlert(message, status){
@@ -91,8 +91,8 @@ export default function Settings() {
     setIsSubmitEnabled(false)
 
     // All validation must pass before this.
-    axios
-      .post(base_url + '/api/records/orders/batch', {
+    api
+      .post('/api/records/orders/batch', {
         
         backtest: {
           backtest_start_date: startDate,
@@ -202,12 +202,64 @@ export default function Settings() {
     }
   }
 
+  function findEarliestDate(ords) {
+    if (ords.length == 0) return '';
+
+    console.log(ords)
+
+    const earliestDate = ords.reduce((earliest, order) => {
+      const [date, time] = order.begin_date.split(' ');
+      const [year, month, day] = date.split('-').map(Number);
+      const [hour, minute, second] = time.split(':').map(Number);
+      const orderDate = new Date(year, month - 1, day, hour, minute, second);
+      return orderDate < earliest ? orderDate : earliest;
+    }, new Date());
+  
+
+    const earliestDateString = earliestDate.toISOString().slice(0, 10);
+    console.log('Earliest date', earliestDateString);
+
+    return earliestDateString;
+  }
+
+  function findLatestEndDate(ords) {
+    if (ords.length === 0) return '';
+  
+    const latestEndDate = ords.reduce((latest, order) => {
+      const [date, time] = order.end_date.split(' ');
+      const [year, month, day] = date.split('-').map(Number);
+      const [hour, minute, second] = time.split(':').map(Number);
+      const orderDate = new Date(year, month - 1, day, hour, minute, second);
+      return orderDate > latest ? orderDate : latest;
+    }, new Date(0)); // Initialize with a date far in the past
+  
+    const latestEndDateString = latestEndDate.toISOString().slice(0, 10);
+    console.log('Latest end date', latestEndDateString);
+  
+    return latestEndDateString;
+  }
+
   useEffect(()=>{
+    
+    
     if (orders.length != 0 && ordersValid){
+
+      
+      setStartDate(findEarliestDate(orders))
+      setEndDate(findLatestEndDate(orders))
       setIsSubmitEnabled(true)
       console.log(orders)
     }
+
+
   }, [orders])
+
+
+  useEffect(() =>{
+
+    console.log("Start Date", startDate)
+
+  }, [startDate])
 
   // Chakra Color Mode
   return (
@@ -219,17 +271,32 @@ export default function Settings() {
           
           <FormControl id="name" isRequired={false}>
             <FormLabel>Strategy Name</FormLabel>
-            <Input type="text" value={name} onChange={e => setName(e.target.value)} />
+            <Input 
+              variant="main"
+              borderRadius="5px" 
+              type="text" 
+              value={name} 
+              onChange={e => setName(e.target.value)} />
           </FormControl>
 
           <FormControl id="description" isRequired={false}>
             <FormLabel>Description</FormLabel>
-            <Input as={Textarea} type="text" value={description} onChange={e => setDescription(e.target.value)} />
+            <Input 
+              as={Textarea} 
+              type="text" 
+              borderRadius="5px"
+              value={description} 
+              onChange={e => setDescription(e.target.value)} />
           </FormControl>
 
           <FormControl id="notes" isRequired={false}>
             <FormLabel>Notes</FormLabel>
-            <Input as={Textarea} type="text" value={notes} onChange={e => setNotes(e.target.value)} />
+            <Input 
+            borderRadius="5px"
+            as={Textarea} 
+            type="text" 
+            value={notes} 
+            onChange={e => setNotes(e.target.value)} />
           </FormControl>
 
 
@@ -238,12 +305,22 @@ export default function Settings() {
 
             <FormControl id="startDate" isRequired={true} isInvalid={!endDate}>
               <FormLabel>Backtest Start Date</FormLabel>
-              <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              <Input 
+                variant="main"
+                borderRadius="5px"
+                type="date" 
+                value={startDate} 
+                onChange={e => setStartDate(e.target.value)} />
             </FormControl>
 
             <FormControl id="endDate" isRequired={true} isInvalid={!endDate}>
               <FormLabel>Backtest End Date</FormLabel>
-              <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+              <Input 
+                type="date" 
+                variant="main" 
+                borderRadius="5px"
+                value={endDate} 
+                onChange={e => setEndDate(e.target.value)} />
             </FormControl>
 
           </Stack>
@@ -254,11 +331,12 @@ export default function Settings() {
             
             <InputGroup size="md">
               <Input 
+                variant="main"
                 accept=".csv" 
                 type="file" 
                 onChange={handleFileSelect} 
                 borderRadius="0"
-                pr='8rem' />       
+                p='4px'/>       
               
             </InputGroup>
             

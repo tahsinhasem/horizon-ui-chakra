@@ -18,12 +18,11 @@ import CheckTable from "views/nt/backtestRecords/components/CheckTable";
 import StatsCard from "./components/StatsCard";
 import testing_data from "views/nt/backtestRecords/variables/testing_data.json";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-import axios from "axios";
+import useAxios from "utils/useAxios";
 
 export default function BackTestRecord(props) {
 
   const {strategyID} = props;
-  const base_url = "http://127.0.0.1:8000"
 
   const [id, setId] = React.useState("ac16ef8d-4ad8-42f8-adbd-a77f06c720ce");
   const [strategyName, setStrategyName] = React.useState("Strategy Name");
@@ -44,6 +43,8 @@ export default function BackTestRecord(props) {
 
   const [isLoading, setIsLoading] = React.useState(true);
 
+  const api = useAxios();
+
   //backtest strategy duration in days
   const [strategyDuration, setStrategyDuration] = React.useState(150);
 
@@ -57,8 +58,8 @@ export default function BackTestRecord(props) {
   function getStrategyDetails(id){
     console.log("fetching details for id: ", id)
     
-    axios
-    .get(base_url+"/api/records/backtests/" + id)
+    api
+    .get("/api/records/backtests/" + id)
     .then(res => {
       const data = res.data;
 
@@ -111,8 +112,9 @@ export default function BackTestRecord(props) {
     }else{
       console.log("Making Edit to startegy id: ", id);
       
-      axios
-        .put(base_url+"/api/records/backtests/" + id, {
+      
+      api
+        .put("/api/records/backtests/" + id, {
           name: strategyName,
           description: description,
           notes: notes,

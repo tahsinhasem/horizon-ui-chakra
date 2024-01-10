@@ -1,6 +1,6 @@
 {
-  "homepage": "https://horizon-ui.com/horizon-ui-chakra",
-  "name": "horizon-ui-chakra",
+  "homepage": "/",
+  "name": "nt-hft-dashboard",
   "version": "1.0.1",
   "private": true,
   "dependencies": {
@@ -22,7 +22,9 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
+    "dayjs": "^1.11.10",
     "framer-motion": "^4.1.17",
+    "jwt-decode": "^4.0.0",
     "papaparse": "^5.4.1",
     "react": "17.0.2",
     "react-apexcharts": "1.4.0",
