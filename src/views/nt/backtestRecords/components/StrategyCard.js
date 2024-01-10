@@ -1,7 +1,6 @@
 import React, { Component } from 'react';   //import React Component
 import { Box, Stat, StatLabel, StatNumber, StatHelpText, CircularProgressLabel, CircularProgress, Divider, Grid, Heading, Text, Link, IconButton, Icon, Tooltip, ButtonGroup, GridItem, Flex} from "@chakra-ui/react";
 import Card from "components/card/Card";
-import { Link as ReachLink } from "@reach/router"
 import { MdArrowForward, MdDownload, MdContentCopy, MdDelete } from 'react-icons/md';
 import Papa from 'papaparse';
 import useAxios from 'utils/useAxios';
